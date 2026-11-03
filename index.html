@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إلى أميرتي سلمى ❤️ | 4 نوفمبر</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;800;900&family=Reem+Kufi:wght@600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Three.js Library for 3D Graphics -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #ff2a6d;
+            --primary-glow: rgba(255, 42, 109, 0.5);
+            --accent-gold: #ffd700;
+            --gold-glow: rgba(255, 215, 0, 0.4);
+            --bg-dark: #05020a;
+            --glass-bg: rgba(20, 10, 35, 0.55);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --text-color: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 3D Canvas Background */
+        #webgl-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Main Container */
+        .app-container {
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 30px 20px 60px 20px;
+            text-align: center;
+        }
+
+        /* Header section */
+        .hero-section {
+            margin-bottom: 30px;
+        }
+
+        .date-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, rgba(255, 42, 109, 0.2), rgba(255, 215, 0, 0.2));
+            border: 1px solid var(--accent-gold);
+            padding: 10px 28px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            box-shadow: 0 0 20px var(--gold-glow);
+            backdrop-filter: blur(10px);
+            margin-bottom: 25px;
+            animation: pulseGlow 2.5s infinite ease-in-out;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px var(--gold-glow); transform: scale(1); }
+            50% { box-shadow: 0 0 30px var(--primary-glow); transform: scale(1.03); }
+        }
+
+        /* 24-HOUR COUNTDOWN TIMER STYLING */
+        .countdown-container {
+            background: rgba(15, 5, 25, 0.7);
+            border: 1.5px solid rgba(255, 42, 109, 0.4);
+            border-radius: 25px;
+            padding: 20px 15px;
+            margin: 0 auto 35px auto;
+            max-width: 550px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255, 42, 109, 0.15);
+        }
+
+        .countdown-title {
+            font-size: 1.05rem;
+            color: var(--accent-gold);
+            margin-bottom: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .timer-boxes {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .time-box {
+            background: linear-gradient(145deg, rgba(35, 15, 50, 0.9), rgba(15, 5, 25, 0.95));
+            border: 1px solid var(--primary-glow);
+            border-radius: 16px;
+            padding: 12px 16px;
+            min-width: 80px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .time-value {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 12px var(--primary-glow);
+            line-height: 1;
+        }
+
+        .time-label {
+            font-size: 0.8rem;
+            color: #b5a4c9;
+            margin-top: 6px;
+            font-weight: 600;
+        }
+
+        .timer-separator {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--accent-gold);
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.2; }
+        }
+
+        /* 3D Profile Frame Container */
+        .avatar-3d-wrapper {
+            position: relative;
+            width: 210px;
+            height: 210px;
+            margin: 0 auto 30px auto;
+            perspective: 1000px;
+        }
+
+        .avatar-3d-card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .avatar-3d-wrapper:hover .avatar-3d-card {
+            transform: rotateY(180deg) rotateX(10deg);
+        }
+
+        .avatar-img-container {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            padding: 6px;
+            background: linear-gradient(45deg, var(--primary), var(--accent-gold), #9b51e0);
+            box-shadow: 0 0 35px var(--primary-glow);
+            position: relative;
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #05020a;
+        }
+
+        /* Rotating 3D Orbits */
+        .orbit-ring {
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            right: -15px;
+            bottom: -15px;
+            border-radius: 50%;
+            border: 2px dashed rgba(255, 215, 0, 0.6);
+            animation: orbitSpin 12s linear infinite;
+            pointer-events: none;
+        }
+
+        .orbit-ring-2 {
+            position: absolute;
+            top: -25px;
+            left: -25px;
+            right: -25px;
+            bottom: -25px;
+            border-radius: 50%;
+            border: 1.5px dotted var(--primary);
+            animation: orbitSpin 18s linear infinite reverse;
+            pointer-events: none;
+        }
+
+        @keyframes orbitSpin {
+            0% { transform: rotateZ(0deg) rotateX(20deg); }
+            100% { transform: rotateZ(360deg) rotateX(20deg); }
+        }
+
+        h1.hero-title {
+            font-family: 'Reem Kufi', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(180deg, #ffffff 0%, #ffc0d3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            text-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: #d8c2e7;
+            margin-bottom: 30px;
+        }
+
+        /* Audio Indicator Bar */
+        .audio-bar {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(15px);
+            padding: 14px 25px;
+            border-radius: 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--accent-gold);
+            font-weight: 600;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            margin-bottom: 50px;
+        }
+
+        .audio-wave {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            height: 20px;
+        }
+
+        .audio-wave span {
+            width: 3px;
+            height: 100%;
+            background: var(--primary);
+            border-radius: 3px;
+            animation: wave 1.2s ease-in-out infinite alternate;
+        }
+
+        .audio-wave span:nth-child(2) { animation-delay: 0.2s; }
+        .audio-wave span:nth-child(3) { animation-delay: 0.4s; }
+        .audio-wave span:nth-child(4) { animation-delay: 0.6s; }
+
+        @keyframes wave {
+            0% { height: 4px; }
+            100% { height: 20px; }
+        }
+
+        /* Promises Section */
+        .promise-banner {
+            background: linear-gradient(135deg, rgba(255, 42, 109, 0.15), rgba(15, 5, 25, 0.8));
+            border: 1px solid rgba(255, 42, 109, 0.4);
+            border-radius: 24px;
+            padding: 35px 25px;
+            margin-bottom: 60px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .promise-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--primary), var(--accent-gold));
+        }
+
+        .promise-banner h2 {
+            font-size: 1.8rem;
+            color: var(--accent-gold);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .promise-banner p {
+            font-family: 'Amiri', serif;
+            font-size: 1.5rem;
+            line-height: 1.9;
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        /* 10 Envelopes Grid Header */
+        .grid-header {
+            font-size: 1.8rem;
+            color: #fff;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .grid-subtext {
+            color: #b5a4c9;
+            margin-bottom: 40px;
+            font-size: 1.05rem;
+        }
+
+        /* 3D Envelopes / Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 60px;
+            perspective: 1000px;
+        }
+
+        .envelope-card {
+            height: 220px;
+            position: relative;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .envelope-card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--glass-border);
+        }
+
+        .card-front {
+            background: linear-gradient(145deg, rgba(30, 15, 45, 0.7), rgba(15, 5, 25, 0.85));
+            backdrop-filter: blur(15px);
+        }
+
+        .envelope-card:hover .card-front {
+            border-color: var(--primary);
+            box-shadow: 0 15px 35px var(--primary-glow);
+        }
+
+        .card-number {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: var(--accent-gold);
+            background: rgba(255, 215, 0, 0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .envelope-icon {
+            font-size: 3.2rem;
+            color: var(--primary);
+            margin-bottom: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .envelope-card:hover .envelope-icon {
+            transform: scale(1.15) rotate(5deg);
+            color: var(--accent-gold);
+        }
+
+        .card-hint {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .click-tap-text {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 6px;
+        }
+
+        .card-back {
+            background: linear-gradient(145deg, rgba(40, 15, 55, 0.95), rgba(20, 5, 30, 0.95));
+            transform: rotateY(180deg);
+            border: 1.5px solid var(--accent-gold);
+            backdrop-filter: blur(20px);
+            text-align: center;
+        }
+
+        .card-back-content {
+            font-family: 'Amiri', serif;
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: #ffffff;
+            overflow-y: auto;
+            max-height: 100%;
+        }
+
+        .dialect-badge {
+            display: inline-block;
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+        }
+
+        .badge-maghrebi { background: rgba(255, 42, 109, 0.2); color: var(--primary); border: 1px solid var(--primary); }
+        .badge-egyptian { background: rgba(255, 215, 0, 0.2); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
+
+        /* Fullscreen Overlay to Start Experience and Music */
+        .entry-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at center, #1a0826 0%, #05020a 100%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+
+        .entry-btn {
+            background: linear-gradient(45deg, var(--primary), #ff6b8b);
+            color: #fff;
+            padding: 18px 45px;
+            border-radius: 50px;
+            font-size: 1.35rem;
+            font-weight: 800;
+            border: none;
+            box-shadow: 0 0 30px var(--primary-glow);
+            margin-top: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .entry-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 45px var(--primary-glow);
+        }
+
+        footer {
+            margin-top: 40px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 768px) {
+            h1.hero-title { font-size: 2.2rem; }
+            .promise-banner p { font-size: 1.25rem; }
+            .cards-grid { grid-template-columns: 1fr; }
+            .time-box { min-width: 65px; padding: 10px 10px; }
+            .time-value { font-size: 1.7rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 3D Canvas Background -->
+    <canvas id="webgl-bg"></canvas>
+
+    <!-- Overlay Screen for Music Autoplay Activation -->
+    <div class="entry-overlay" id="entryOverlay" onclick="startApp()">
+        <div style="font-size: 4.5rem; color: var(--primary); animation: pulseGlow 1.5s infinite alternate;">
+            <i class="fa-solid fa-heart-pulse"></i>
+        </div>
+        <h2 style="font-size: 2rem; color: #fff; margin-top: 20px; font-weight: 800;">إلى أميرتي الغالية سلمى ❤️</h2>
+        <p style="color: #b5a4c9; margin-top: 8px;">اضغطي في أي مكان للبدء</p>
+        <button class="entry-btn"><i class="fa-solid fa-envelope-open-heart"></i> افتحي الهدية 🎁</button>
+    </div>
+
+    <!-- Hidden YouTube Audio Player -->
+    <iframe id="youtubeAudio" width="0" height="0" src="https://www.youtube.com/embed/dYeEoyGTc_o?enablejsapi=1&autoplay=0&loop=1&playlist=dYeEoyGTc_o" frameborder="0" allow="autoplay"></iframe>
+
+    <div class="app-container">
+        
+        <!-- Hero Section -->
+        <header class="hero-section">
+            <div class="date-tag">
+                <i class="fa-solid fa-sparkles"></i> 4 نـوفـمـبـر — حـكـايـة حـب لـا تـنـتـهـي
+            </div>
+
+            <!-- 24-Hour Countdown Timer -->
+            <div class="countdown-container">
+                <div class="countdown-title">
+                    <i class="fa-solid fa-hourglass-half"></i> الوقت المتبقي لحلول 4 نوفمبر (عيد الحب) ❤️
+                </div>
+                <div class="timer-boxes">
+                    <div class="time-box">
+                        <div class="time-value" id="hours">00</div>
+                        <div class="time-label">ساعة</div>
+                    </div>
+                    <span class="timer-separator">:</span>
+                    <div class="time-box">
+                        <div class="time-value" id="minutes">00</div>
+                        <div class="time-label">دقيقة</div>
+                    </div>
+                    <span class="timer-separator">:</span>
+                    <div class="time-box">
+                        <div class="time-value" id="seconds">00</div>
+                        <div class="time-label">ثانية</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3D Avatar Frame -->
+            <div class="avatar-3d-wrapper">
+                <div class="orbit-ring"></div>
+                <div class="orbit-ring-2"></div>
+                <div class="avatar-3d-card">
+                    <div class="avatar-img-container">
+                        <img src="https://www.image2url.com/r2/default/images/1793692333979-beb0a7f2-909e-459f-8a1f-773aff0e119f.jpg" alt="سلمى" class="avatar-img">
+                    </div>
+                </div>
+            </div>
+
+            <h1 class="hero-title">سـلـمـى ❤️</h1>
+            <p class="hero-subtitle">كل يوم معاكي هو بداية لقصة جديدة مليانة حب وأمان</p>
+
+            <div class="audio-bar">
+                <i class="fa-solid fa-music"></i>
+                <span>موسيقانا المفضلة تعزف الآن...</span>
+                <div class="audio-wave">
+                    <span></span><span></span><span></span><span></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Eternal Promise Section -->
+        <section class="promise-banner">
+            <h2><i class="fa-solid fa-shield-heart"></i> عهدي ووعدي الأبدي ليكي</h2>
+            <p>
+                "يا سلمى، مهما كانت الظروف ومهما حصل فالدنيا، هفضل دايماً جنبك، سندك وظهرك، والأمان اللي تلتجئي ليه وأنتِ مطمنة.. ايدي في ايدك للأبد ومش هسيبك لحظة واحدة ❤️"
+            </p>
+        </section>
+
+        <!-- 10 Interactive Envelope Cards -->
+        <section>
+            <h3 class="grid-header">10 رسائل حب من القلب ✨</h3>
+            <p class="grid-subtext">اضغطي على كل ظرف عشان تكتشفي الرسالة اللي جواه</p>
+
+            <div class="cards-grid">
+
+                <!-- Envelope 1 -->
+                <div class="envelope-card" onclick="flipCard(this)">
+                    <div class="card-front">
+                        <span class="card-number">01</span>
+                        <i class="fa-solid fa-envelope-heart envelope-icon"></i>
+                        <span class="card-hint">الكبيدة ديالي</span>
+                        <span class="click-tap-text">اضغطي للفتح ✨</span>
+                    </div>
+                    <div class="card-back">
+                        <span class="dialect-badge badge-maghrebi">اللهجة المغربية</span>
+                        <div class="card-back-content">
+                            "أ سلمى يا الغالية والكبيدة ديالي ❤️، أنتِ النور اللي ضاوي عليا حياتي. كنبغيك بزاف وكنموت عليك، وربي يخليك ليا وما يحرمني من ضحكتك الزوينة أبداً."
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Envelope 2 -->
+                <div class="envelope-card" onclick="flipCard(this)">
+                    <div class="card-front">
+                        <span class="card-number">02</span>
+                        <i class="fa-solid fa-box-archive envelope-icon"></i>
+                        <span class="card-hint">ست البنات</span>
+                        <span class="click-tap-text">اضغطي للفتح ✨</span>
+                    </div>
+                    <div class="card-back">
+                        <span class="dialect-badge badge-egyptian">اللهجة المصرية</span>
+                        <div class="card-back-content">
+                            "يا سلمى يا ست البنات كلها، وجودك في حياتي مخلّي لكل حاجة طعم حلو. أنتِ مش بس حبيبتي، أنتِ صاحبتي وأمني وضحكة قلبي الصافية."
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Envelope 3 -->
+                <div class="envelope-card" onclick="flipCard(this)">
+                    <div class="card-front">
+                        <span class="card-number">03</span>
+                        <i class="fa-solid fa-heart-circle-check envelope-icon"></i>
+                        <span class="card-hint">الروح والعمر</span>
+                        <span class="click-tap-text">اضغطي للفتح ✨</span>
+                    </div>
+                    <div class="card-back">
+                        <span class="dialect-badge badge-maghrebi">اللهجة المغربية</span>
+                        <div class="card-back-content">
+                            "أنتِ الروح والعمر يا غزالتي ❤️.. ديما فبالي وفقلبي، وكل نهار كيزيد حبك فقلبي كتر وكتر. الله يحفظك ليا من كل شر يا أحلى حاجة وقعات ليا."
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Envelope 4 -->
+                <div class="envelope-card" onclick="flipCard(this)">
+                    <div class="card-front">
+                        <span class="card-number">04</span>
+                        <i class="fa-solid fa-hand-holding-heart envelope-icon"></i>
+                        <span class="card-hint">السند والأمان</span>
+                        <span class="click-tap-text">اضغطي للفتح ✨</span>
+                    </div>
+                    <div class="card-back">
+                        <span class="dialect-badge badge-egyptian">اللهجة المصرية</span>
+                        <div class="card-back-content">
+                            "مهما الدنيا تتغير، أنا هفضل سندك الدايم، الضهر اللي تتسندي عليه وأنتِ غمض عينيكي مطمنة.. ايدي فإيدك دايماً يا سلمى."
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Envelope 5 -->
+                <div class="envelope-card" onclick="flipCard(this)">
+                    <div class="card-front">
+                        <span class="card-number">05</span>
+                        <i class="fa-solid fa-gem envelope-icon"></i>
+                        <span class="card-hint">أغلى من الجوهر</span>
+                        <span class="click-tap-text">اضغطي للفتح ✨</span>
+                    </div>
+                    <div class="card-back">
+                        <span class="dialect-badge badge-maghrebi">اللهجة المغربية</span>
+                        <div class="card-back-content">
+                            "أ الزين ديالي ويا غالية عليا، أنتِ جوهرة فمعادنك وفي أصلك. ربي يخلي أيامنا كلها فرح وحب وسعادة، يا وجه الخير عليا."
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Envelope 6 -->
+                <div class="envelope-card" onclick="flipCard(this)">
+                    <div class="card-front">
+                        <span class="card-number">06</span>
+                        <i class="fa-solid fa-sun envelope-icon"></i>
+                        <span class="card-hint">نور حياتي</span>
+                        <span class="click-tap-text">اضغطي للفتح ✨</span>
+                    </div>
+                    <div class="card-back">
+                        <span class="dialect-badge badge-egyptian">اللهجة المصرية</span>
+                        <div class="card-back-content">
+                            "ضحكتك بالنسبة ليا زي الشمس اللي بتنوّر أي يوم ضلام.. لما بتبصيلي وب تبتسمي، كل هموم الدنيا بتختفي في ثانية."
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Envelope 7 -->
+                <div class="envelope-card" onclick="flipCard(this)">
+                    <div class="card-front">
+                        <span class="card-number">07</span>
+                        <i class="fa-solid fa-crown envelope-icon"></i>
+                        <span class="card-hint">أميرة قلبي</span>
+                        <span class="click-tap-text">اضغطي للفتح ✨</span>
+                    </div>
+                    <div class="card-back">
+                        <span class="dialect-badge badge-maghrebi">اللهجة المغربية</span>
+                        <div class="card-back-content">
+                            "أ أنتِ ملكة قلبي وأميرتي ❤️.. مهما كتبت ليك من كلام حلو، باقي ما توفيش حقك ولا تعبر على اللي فقلبي جيهتك يا لالة سلمى."
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Envelope 8 -->
+                <div class="envelope-card" onclick="flipCard(this)">
+                    <div class="card-front">
+                        <span class="card-number">08</span>
+                        <i class="fa-solid fa-infinity envelope-icon"></i>
+                        <span class="card-hint">حب بلا حدود</span>
+                        <span class="click-tap-text">اضغطي للفتح ✨</span>
+                    </div>
+                    <div class="card-back">
+                        <span class="dialect-badge badge-egyptian">اللهجة المصرية</span>
+                        <div class="card-back-content">
+                            "بحبك في كل أوقاتك، في هدوءك وفي كلامك.. بحب العفوية اللي فيكي وطيبة قلبك اللي ملهاش مثيل فالدنيا دي كلها."
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Envelope 9 -->
+                <div class="envelope-card" onclick="flipCard(this)">
+                    <div class="card-front">
+                        <span class="card-number">09</span>
+                        <i class="fa-solid fa-feather-pointed envelope-icon"></i>
+                        <span class="card-hint">راحة البال</span>
+                        <span class="click-tap-text">اضغطي للفتح ✨</span>
+                    </div>
+                    <div class="card-back">
+                        <span class="dialect-badge badge-maghrebi">اللهجة المغربية</span>
+                        <div class="card-back-content">
+                            "راحة بالي وسعادتي هي نشوفك فرحانة ومبتسمة.. ربي يجعل طريقك كله ورد ويسير، ويديمك نعمة فحيياتي يا سلمى ديالي."
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Envelope 10 -->
+                <div class="envelope-card" onclick="flipCard(this)">
+                    <div class="card-front">
+                        <span class="card-number">10</span>
+                        <i class="fa-solid fa-ribbon envelope-icon"></i>
+                        <span class="card-hint">الوعد الأخير</span>
+                        <span class="click-tap-text">اضغطي للفتح ✨</span>
+                    </div>
+                    <div class="card-back">
+                        <span class="dialect-badge badge-egyptian">اللهجة المصرية</span>
+                        <div class="card-back-content">
+                            "في يوم 4 نوفمبر وكل يوم هيعدي في عمرنا: توعديني نفضل سوا؟ لأني بوعدك أكون ليكي الأمان والسند والحب اللي ما يخلصش أبداً ❤️"
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <footer>
+            صُنع بحب وإتقان هندسي خصيصاً لأجمل سلمى في الدنيا ✨
+        </footer>
+
+    </div>
+
+    <!-- 3D Scene Script (Three.js) & App Logic -->
+    <script>
+        // 1. Audio Start Control
+        function startApp() {
+            const overlay = document.getElementById('entryOverlay');
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.style.visibility = 'hidden';
+            }, 800);
+
+            // Play Youtube Audio
+            const player = document.getElementById('youtubeAudio');
+            player.src = "https://www.youtube.com/embed/dYeEoyGTc_o?autoplay=1&loop=1&playlist=dYeEoyGTc_o";
+        }
+
+        // 2. Card Flip Trigger
+        function flipCard(card) {
+            card.classList.toggle('flipped');
+        }
+
+        // 3. 24-HOUR COUNTDOWN LOGIC (Targeting midnight start of Nov 4th)
+        function updateCountdown() {
+            const now = new Date();
+            // Target is Nov 4th, 00:00:00 local time
+            let target = new Date(now.getFullYear(), 10, 4, 0, 0, 0); // Month index 10 = November
+
+            // If Nov 4 has passed, set target to next year or current midnight end
+            if (now > target) {
+                target = new Date(now.getFullYear() + 1, 10, 4, 0, 0, 0);
+            }
+
+            const diff = target - now;
+
+            if (diff <= 0) {
+                document.getElementById('hours').innerText = "00";
+                document.getElementById('minutes').innerText = "00";
+                document.getElementById('seconds').innerText = "00";
+                return;
+            }
+
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((diff / 1000 / 60) % 60);
+            const seconds = Math.floor((diff / 1000) % 60);
+
+            document.getElementById('hours').innerText = hours < 10 ? '0' + hours : hours;
+            document.getElementById('minutes').innerText = minutes < 10 ? '0' + minutes : minutes;
+            document.getElementById('seconds').innerText = seconds < 10 ? '0' + seconds : seconds;
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // 4. Three.js 3D Floating Hearts & Crystals Background Setup
+        const canvas = document.getElementById('webgl-bg');
+        const scene = new THREE.Scene();
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 30;
+
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+        scene.add(ambientLight);
+
+        const pointLight = new THREE.PointLight(0xff2a6d, 2, 100);
+        pointLight.position.set(10, 20, 15);
+        scene.add(pointLight);
+
+        const goldLight = new THREE.PointLight(0xffd700, 1.5, 100);
+        goldLight.position.set(-10, -10, 10);
+        scene.add(goldLight);
+
+        // Heart Geometry Creation
+        const heartShape = new THREE.Shape();
+        heartShape.moveTo(0, 0);
+        heartShape.bezierCurveTo(0, 0.5, -0.5, 1, -1, 1);
+        heartShape.bezierCurveTo(-1.7, 1, -1.7, 0.2, -1.7, 0.2);
+        heartShape.bezierCurveTo(-1.7, -0.4, -1, -0.9, 0, -1.6);
+        heartShape.bezierCurveTo(1, -0.9, 1.7, -0.4, 1.7, 0.2);
+        heartShape.bezierCurveTo(1.7, 0.2, 1.7, 1, 1, 1);
+        heartShape.bezierCurveTo(0.5, 1, 0, 0.5, 0, 0);
+
+        const extrudeSettings = { depth: 0.4, bevelEnabled: true, bevelSegments: 3, steps: 1, bevelSize: 0.15, bevelThickness: 0.15 };
+        const heartGeometry = new THREE.ExtrudeGeometry(heartShape, extrudeSettings);
+
+        // Materials
+        const pinkMaterial = new THREE.MeshPhongMaterial({ color: 0xff2a6d, shininess: 80 });
+        const goldMaterial = new THREE.MeshPhongMaterial({ color: 0xffd700, shininess: 100 });
+        const purpleMaterial = new THREE.MeshPhongMaterial({ color: 0x9b51e0, shininess: 60 });
+
+        const materials = [pinkMaterial, goldMaterial, purpleMaterial];
+        const heartsGroup = new THREE.Group();
+
+        // Spawn 45 3D Objects
+        for (let i = 0; i < 45; i++) {
+            const mat = materials[Math.floor(Math.random() * materials.length)];
+            const mesh = new THREE.Mesh(heartGeometry, mat);
+
+            mesh.position.x = (Math.random() - 0.5) * 60;
+            mesh.position.y = (Math.random() - 0.5) * 60;
+            mesh.position.z = (Math.random() - 0.5) * 40;
+
+            const scale = Math.random() * 0.7 + 0.4;
+            mesh.scale.set(scale, scale, scale);
+
+            mesh.rotation.x = Math.random() * Math.PI;
+            mesh.rotation.y = Math.random() * Math.PI;
+
+            // Custom speeds for animation
+            mesh.userData = {
+                speedX: (Math.random() - 0.5) * 0.015,
+                speedY: Math.random() * 0.02 + 0.01,
+                rotSpeed: (Math.random() - 0.5) * 0.03
+            };
+
+            heartsGroup.add(mesh);
+        }
+        scene.add(heartsGroup);
+
+        // Mouse Parallax Effect
+        let mouseX = 0, mouseY = 0;
+        window.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth - 0.5) * 0.5;
+            mouseY = (e.clientY / window.innerHeight - 0.5) * 0.5;
+        });
+
+        // Animation Loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Rotate and Move 3D Objects
+            heartsGroup.children.forEach(mesh => {
+                mesh.rotation.x += mesh.userData.rotSpeed;
+                mesh.rotation.y += mesh.userData.rotSpeed;
+                mesh.position.y += mesh.userData.speedY;
+
+                // Reset position when off screen
+                if (mesh.position.y > 30) {
+                    mesh.position.y = -30;
+                    mesh.position.x = (Math.random() - 0.5) * 60;
+                }
+            });
+
+            // Smooth Camera Parallax
+            camera.position.x += (mouseX * 5 - camera.position.x) * 0.05;
+            camera.position.y += (-mouseY * 5 - camera.position.y) * 0.05;
+            camera.lookAt(scene.position);
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Responsive Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
