@@ -239,44 +239,75 @@
             margin-bottom: 30px;
         }
 
-        /* Audio Indicator Bar */
-        .audio-bar {
+        /* VIDEO PLAYER & CONTROL BUTTONS STYLING */
+        .video-wrapper {
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
-            backdrop-filter: blur(15px);
-            padding: 14px 25px;
-            border-radius: 40px;
-            display: inline-flex;
-            align-items: center;
-            gap: 15px;
-            color: var(--accent-gold);
-            font-weight: 600;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            margin-bottom: 50px;
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 20px;
+            max-width: 650px;
+            margin: 0 auto 50px auto;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 0 25px var(--primary-glow);
         }
 
-        .audio-wave {
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+            margin-bottom: 20px;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .video-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .ctrl-btn {
+            background: linear-gradient(135deg, rgba(255, 42, 109, 0.8), rgba(255, 133, 162, 0.8));
+            color: white;
+            border: 1px solid var(--primary);
+            padding: 12px 30px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 5px 20px var(--primary-glow);
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 4px;
-            height: 20px;
+            gap: 10px;
         }
 
-        .audio-wave span {
-            width: 3px;
-            height: 100%;
-            background: var(--primary);
-            border-radius: 3px;
-            animation: wave 1.2s ease-in-out infinite alternate;
+        .ctrl-btn.stop-btn {
+            background: linear-gradient(135deg, rgba(40, 20, 50, 0.8), rgba(20, 10, 30, 0.9));
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #b5a4c9;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
         }
 
-        .audio-wave span:nth-child(2) { animation-delay: 0.2s; }
-        .audio-wave span:nth-child(3) { animation-delay: 0.4s; }
-        .audio-wave span:nth-child(4) { animation-delay: 0.6s; }
+        .ctrl-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px var(--primary-glow);
+        }
 
-        @keyframes wave {
-            0% { height: 4px; }
-            100% { height: 20px; }
+        .ctrl-btn.stop-btn:hover {
+            color: #fff;
+            border-color: var(--accent-gold);
         }
 
         /* Promises Section */
@@ -447,7 +478,7 @@
         .badge-maghrebi { background: rgba(255, 42, 109, 0.2); color: var(--primary); border: 1px solid var(--primary); }
         .badge-egyptian { background: rgba(255, 215, 0, 0.2); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
 
-        /* Fullscreen Overlay to Start Experience and Music */
+        /* Fullscreen Overlay to Start Experience and Video */
         .entry-overlay {
             position: fixed;
             top: 0;
@@ -495,6 +526,7 @@
             .cards-grid { grid-template-columns: 1fr; }
             .time-box { min-width: 65px; padding: 10px 10px; }
             .time-value { font-size: 1.7rem; }
+            .ctrl-btn { padding: 10px 20px; font-size: 0.95rem; }
         }
     </style>
 </head>
@@ -503,18 +535,15 @@
     <!-- 3D Canvas Background -->
     <canvas id="webgl-bg"></canvas>
 
-    <!-- Overlay Screen for Music Autoplay Activation -->
+    <!-- Overlay Screen for Video Autoplay Activation -->
     <div class="entry-overlay" id="entryOverlay" onclick="startApp()">
         <div style="font-size: 4.5rem; color: var(--primary); animation: pulseGlow 1.5s infinite alternate;">
             <i class="fa-solid fa-heart-pulse"></i>
         </div>
         <h2 style="font-size: 2rem; color: #fff; margin-top: 20px; font-weight: 800;">إلى أميرتي الغالية سلمى ❤️</h2>
-        <p style="color: #b5a4c9; margin-top: 8px;">اضغطي في أي مكان للبدء</p>
+        <p style="color: #b5a4c9; margin-top: 8px;">اضغطي في أي مكان للبدء وتغيل الفيديو</p>
         <button class="entry-btn"><i class="fa-solid fa-envelope-open-heart"></i> افتحي الهدية 🎁</button>
     </div>
-
-    <!-- Hidden YouTube Audio Player -->
-    <iframe id="youtubeAudio" width="0" height="0" src="https://www.youtube.com/embed/dYeEoyGTc_o?enablejsapi=1&autoplay=0&loop=1&playlist=dYeEoyGTc_o" frameborder="0" allow="autoplay"></iframe>
 
     <div class="app-container">
         
@@ -561,11 +590,18 @@
             <h1 class="hero-title">سـلـمـى ❤️</h1>
             <p class="hero-subtitle">كل يوم معاكي هو بداية لقصة جديدة مليانة حب وأمان</p>
 
-            <div class="audio-bar">
-                <i class="fa-solid fa-music"></i>
-                <span>موسيقانا المفضلة تعزف الآن...</span>
-                <div class="audio-wave">
-                    <span></span><span></span><span></span><span></span>
+            <!-- Video Player Section with Play & Pause Buttons -->
+            <div class="video-wrapper">
+                <div class="video-container">
+                    <iframe id="youtubeVideo" src="https://www.youtube.com/embed/dYeEoyGTc_o?enablejsapi=1&autoplay=0&loop=1&playlist=dYeEoyGTc_o" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                </div>
+                <div class="video-controls">
+                    <button class="ctrl-btn" onclick="playVideo()">
+                        <i class="fa-solid fa-play"></i> تشغيل الأغنية 🎵
+                    </button>
+                    <button class="ctrl-btn stop-btn" onclick="pauseVideo()">
+                        <i class="fa-solid fa-pause"></i> إيقاف مؤقت ⏸️
+                    </button>
                 </div>
             </div>
         </header>
@@ -756,7 +792,18 @@
 
     <!-- 3D Scene Script (Three.js) & App Logic -->
     <script>
-        // 1. Audio Start Control
+        // YouTube Iframe API Control Logic
+        const iframe = document.getElementById('youtubeVideo');
+
+        function playVideo() {
+            iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+        }
+
+        function pauseVideo() {
+            iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+        }
+
+        // 1. Audio/Video Start Control on Entry Click
         function startApp() {
             const overlay = document.getElementById('entryOverlay');
             overlay.style.opacity = '0';
@@ -764,9 +811,8 @@
                 overlay.style.visibility = 'hidden';
             }, 800);
 
-            // Play Youtube Audio
-            const player = document.getElementById('youtubeAudio');
-            player.src = "https://www.youtube.com/embed/dYeEoyGTc_o?autoplay=1&loop=1&playlist=dYeEoyGTc_o";
+            // Auto Play Video on Click
+            playVideo();
         }
 
         // 2. Card Flip Trigger
@@ -777,10 +823,8 @@
         // 3. 24-HOUR COUNTDOWN LOGIC (Targeting midnight start of Nov 4th)
         function updateCountdown() {
             const now = new Date();
-            // Target is Nov 4th, 00:00:00 local time
             let target = new Date(now.getFullYear(), 10, 4, 0, 0, 0); // Month index 10 = November
 
-            // If Nov 4 has passed, set target to next year or current midnight end
             if (now > target) {
                 target = new Date(now.getFullYear() + 1, 10, 4, 0, 0, 0);
             }
